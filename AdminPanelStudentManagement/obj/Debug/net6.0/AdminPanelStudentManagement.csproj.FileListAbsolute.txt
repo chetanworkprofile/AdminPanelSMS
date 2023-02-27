@@ -1,0 +1,7 @@
+C:\Users\ChicMic\source\repos\AdminPanelStudentManagement\AdminPanelStudentManagement\obj\Debug\net6.0\AdminPanelStudentManagement.csproj.AssemblyReference.cache
+C:\Users\ChicMic\source\repos\AdminPanelStudentManagement\AdminPanelStudentManagement\obj\Debug\net6.0\AdminPanelStudentManagement.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ChicMic\source\repos\AdminPanelStudentManagement\AdminPanelStudentManagement\obj\Debug\net6.0\AdminPanelStudentManagement.AssemblyInfoInputs.cache
+C:\Users\ChicMic\source\repos\AdminPanelStudentManagement\AdminPanelStudentManagement\obj\Debug\net6.0\AdminPanelStudentManagement.AssemblyInfo.cs
+C:\Users\ChicMic\source\repos\AdminPanelStudentManagement\AdminPanelStudentManagement\obj\Debug\net6.0\AdminPanelStudentManagement.csproj.CoreCompileInputs.cache
+C:\Users\ChicMic\source\repos\AdminPanelStudentManagement\AdminPanelStudentManagement\obj\Debug\net6.0\AdminPanelStudentManagement.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\ChicMic\source\repos\AdminPanelStudentManagement\AdminPanelStudentManagement\obj\Debug\net6.0\AdminPanelStudentManagement.MvcApplicationPartsAssemblyInfo.cache
