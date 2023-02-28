@@ -22,7 +22,7 @@ namespace AdminPanelStudentManagement.Services
 
         public Response AdminLogin(UserDTO request)
         {
-            var admin = DbContext.Admin.Find(request.Username);
+            var admin = DbContext.Admin.Find(1);
             if(admin != null && request.Password == admin.Password)
             {
                 response.StatusCode = 200;

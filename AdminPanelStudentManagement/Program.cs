@@ -10,9 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-/*builder.Services.AddDbContext<AdminSMSAPIDbContext>(options =>
-    // Use SQL Server as the database provider
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AdminSMSApiConnectionString")));*/
+builder.Services.AddDbContext<AdminSMSAPIDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AdminSMSApiConnectionString")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStudentService, StudentService>();

@@ -21,30 +21,19 @@ namespace AdminPanelStudentManagement.Controllers
             teacherService = new TeacherService(dbContext,configuration);
             _logger = logger;
         }
-        [HttpPost]
+       /* [HttpPost]
         [Route("/api/v1/adminlogin")]
         public ActionResult AdminLogin(UserDTO request)
         {
             _logger.LogInformation("Admin Login attempt");
             response = authService.AdminLogin(request);
-            if (response.StatusCode == 404)
-            {
-                _logger.LogError(response.Message);
-                return BadRequest(response);
-            }
-            else if (response.StatusCode == 403)
+            if (response.StatusCode == 404 || response.StatusCode == 403)
             {
                 _logger.LogError(response.Message);
                 return BadRequest(response);
             }
             return Ok(response);
-        }
-/*
-        [HttpPost]
-        [Route("/api/v1/CreateTeacher")]*/
-        /*public ActionResult CreateTeacher(AddTeacher addTeacher)
-        {
-
         }*/
+       // add single entry in database for admin
     }
 }

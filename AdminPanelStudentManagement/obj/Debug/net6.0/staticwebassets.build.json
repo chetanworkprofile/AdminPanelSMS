@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "2fn34zHpCxh3bVvxYzfe7duFpqTNcacUjuDPA0wL5Zs=",
+  "Source": "AdminPanelStudentManagement",
+  "BasePath": "_content/AdminPanelStudentManagement",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
