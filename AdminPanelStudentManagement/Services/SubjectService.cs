@@ -19,12 +19,12 @@ namespace AdminPanelStudentManagement.Services
         public async Task<Response> CreateSubject(AddSubject addSubject)
         {
             Subject? subject = await DbContext.Subjects.FindAsync(addSubject);
-            int subjectCount = await DbContext.Subjects.CountAsync();
+            //int subjectCount = await DbContext.Subjects.CountAsync();
             if (subject == null)
             {
                 var Subject = new Subject()
                 {
-                    Id = subjectCount+1,
+                    Id = new Guid(),
                     Name = addSubject.Name,
                     Description = addSubject.Description,
                     CreatedAt = DateTime.Now,
