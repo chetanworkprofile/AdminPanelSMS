@@ -69,11 +69,12 @@ namespace AdminPanelStudentManagement.Services
             if (StudentId != null) { student = (DbSet<Student>)student.Where(s => (s.Id == StudentId)); }
             if (Name != null) { student = (DbSet<Student>)student.Where(s => (s.Name == Name)); }
             if (Email != null) { student = (DbSet<Student>)student.Where(s => (s.Email == Email)); }
-            //List<Guid> teachersHavingSubject = (List<Guid>)DbContext.SubjectTeachersMappings.Where(st => st.SubjectId == subjectId).Select(t => t.TeacherId);
-            /*if (subjectId != null) 
+            
+            /*if (subjectId != null)
             {
-                SubjectTeacherMappings temp = student.Where(s => s.SubjectTeacherAllocated.Contains(subjectId));
-                student = (DbSet<Student>)student.Where(s => s.SubjectTeacherAllocated.Contains(subjectId)); 
+                List<SubjectTeacherMappingInput> subjectTeacherId = (List<SubjectTeacherMappingInput>)DbContext.SubjectTeachersMappings.Where(st => st.SubjectId == subjectId).Select(st => st);
+                //SubjectTeacherMappings temp = DbContext.SubjectTeachersMappings.Where(s => s.SubjectId.(subjectId));
+                student = (DbSet<Student>)student.Where(s => s.SubjectTeacherAllocated.));
             }*/
 
 
@@ -126,13 +127,13 @@ namespace AdminPanelStudentManagement.Services
                     student.Email = s.Email;
                 }
 
-                List<Subject> subjects = new List<Subject>();
+                /*List<Subject> subjects = new List<Subject>();
                 if (s.SubjectsAllocated != subjects)
                 {
                     student.SubjectsAllocated = s.SubjectsAllocated;
                 }
                 student.UpdatedAt = DateTime.UtcNow;
-                await DbContext.SaveChangesAsync();
+                await DbContext.SaveChangesAsync();*/
 
                 response.StatusCode = 200;
                 response.Message = "Student updated";
