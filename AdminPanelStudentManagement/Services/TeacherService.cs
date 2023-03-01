@@ -2,6 +2,8 @@
 using AdminPanelStudentManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.VisualBasic;
 using StudentManagementSystemAPI.Models;
 using System.Collections.Generic;
@@ -22,8 +24,8 @@ namespace AdminPanelStudentManagement.Services
         public async Task<Response> CreateTeacher(AddTeacher addTeacher)
         {
             //List<Subject>? subjects = await DbContext.SubjectTeachersMappings.Where(st=> st.tea);
-            Teacher? tempTeacher = await DbContext.Teachers.FindAsync(addTeacher.Email);
-            if(tempTeacher == null)
+            bool tempTeacher = DbContext.Teachers.Where(t=>t.Email==addTeacher.Email).Any();
+            if(tempTeacher == false)
             {
                 var Teacher = new Teacher()
                 {
@@ -40,7 +42,7 @@ namespace AdminPanelStudentManagement.Services
                     Id = Teacher.Id,
                     Name = addTeacher.Name,
                     Email = addTeacher.Email,
-                    SubjectsAllocated = new List<Subject>(),
+                    //SubjectsAllocated = new List<Subject>(),
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                 };
@@ -53,18 +55,17 @@ namespace AdminPanelStudentManagement.Services
             }
             response.StatusCode = 409;
             response.Message = "Email already registered";
-            response.Data = tempTeacher;
+            response.Data = string.Empty;
             return response;
         }
 
         public Response GetTeachers(Guid? TeacherID, string? Name, string? Email, Guid? subjectId, String OrderBy, int SortOrder, int RecordsPerPage, int PageNumber)          // sort order   ===   e1 for ascending   -1 for descending
         {
-            var teacher = DbContext.Teachers;
-            teacher  = (DbSet<Teacher>)teacher.Where(t => t.IsDeleted == false);
-            if (TeacherID != null) { teacher = (DbSet<Teacher>)teacher.Where(s => (s.Id == TeacherID)); }
-            if (Name != null) { teacher = (DbSet<Teacher>)teacher.Where(s => (s.Name == Name)); }
-            if (Email != null) { teacher = (DbSet<Teacher>)teacher.Where(s => (s.Email == Email)); }
-            List<Guid> teachersHavingSubject = (List<Guid>)DbContext.SubjectTeachersMappings.Where(st => st.SubjectId == subjectId).Select(t => t.TeacherId);
+            var teacher = DbContext.Teachers.Where(t => t.IsDeleted == false).ToList();
+            if (TeacherID != null) { teacher = teacher.Where(s => (s.Id == TeacherID)).ToList(); }
+            if (Name != null) { teacher = teacher.Where(s => (s.Name == Name)).ToList(); }
+            if (Email != null) { teacher = teacher.Where(s => (s.Email == Email)).ToList(); }
+            List<Guid> teachersHavingSubject = DbContext.SubjectTeachersMappings.Where(st => st.SubjectId == subjectId).Select(t => t.TeacherId).ToList();
 
             if (subjectId != null)
             {
@@ -92,19 +93,33 @@ namespace AdminPanelStudentManagement.Services
 
             if (SortOrder == 1)
             {
-                teacher = (DbSet<Teacher>)teacher.OrderBy(orderBy).Select(c => (c));
+                teacher = teacher.OrderBy(orderBy).Select(c => (c)).ToList();
             }
             else
             {
-                teacher = (DbSet<Teacher>)teacher.OrderByDescending(orderBy).Select(c => (c));
+                teacher = teacher.OrderByDescending(orderBy).Select(c => (c)).ToList();
             }
 
             //pagination
-            teacher = (DbSet<Teacher>)teacher.Skip((PageNumber - 1) * RecordsPerPage)
-                                  .Take(RecordsPerPage);
+            teacher = teacher.Skip((PageNumber - 1) * RecordsPerPage)
+                                  .Take(RecordsPerPage).ToList();
+            List<TeacherResponse> teacherResponses= new List<TeacherResponse>();
+            foreach(var a in teacher)
+            {
+                TeacherResponse t = new TeacherResponse()
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Email = a.Email,
+                    CreatedAt = a.CreatedAt,
+                    UpdatedAt = a.UpdatedAt
+                    //SubjectsAllocated = DbContext.Subjects.Where(s => s.Id == DbContext.SubjectTeachersMappings.Where(st => st.TeacherId == a.Id).Select(s => s.SubjectId))
+                };
+                teacherResponses.Add(t);
+            }
             response.StatusCode = 200;
             response.Message = "Teacher list fetched";
-            response.Data = teacher;
+            response.Data = teacherResponses;
             return response;
 
         }

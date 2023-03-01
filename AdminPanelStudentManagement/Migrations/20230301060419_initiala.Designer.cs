@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdminPanelStudentManagement.Migrations
 {
     [DbContext(typeof(AdminSMSAPIDbContext))]
-    [Migration("20230228095219_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230301060419_initiala")]
+    partial class initiala
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,11 +75,9 @@ namespace AdminPanelStudentManagement.Migrations
 
             modelBuilder.Entity("AdminPanelStudentManagement.Models.Subject", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -93,17 +91,34 @@ namespace AdminPanelStudentManagement.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("StudentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
+                    b.ToTable("Subjects");
+                });
+
+            modelBuilder.Entity("AdminPanelStudentManagement.Models.SubjectTeacherMappings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SubjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TeacherId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("SubjectTeachersMappings");
                 });
 
             modelBuilder.Entity("AdminPanelStudentManagement.Models.Teacher", b =>
@@ -127,38 +142,24 @@ namespace AdminPanelStudentManagement.Migrations
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int?>("SubjectAllocatedId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubjectAllocatedId");
-
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("AdminPanelStudentManagement.Models.Subject", b =>
+            modelBuilder.Entity("AdminPanelStudentManagement.Models.SubjectTeacherMappings", b =>
                 {
                     b.HasOne("AdminPanelStudentManagement.Models.Student", null)
-                        .WithMany("SubjectsAllocated")
+                        .WithMany("SubjectTeacherAllocated")
                         .HasForeignKey("StudentId");
-                });
-
-            modelBuilder.Entity("AdminPanelStudentManagement.Models.Teacher", b =>
-                {
-                    b.HasOne("AdminPanelStudentManagement.Models.Subject", "SubjectAllocated")
-                        .WithMany()
-                        .HasForeignKey("SubjectAllocatedId");
-
-                    b.Navigation("SubjectAllocated");
                 });
 
             modelBuilder.Entity("AdminPanelStudentManagement.Models.Student", b =>
                 {
-                    b.Navigation("SubjectsAllocated");
+                    b.Navigation("SubjectTeacherAllocated");
                 });
 #pragma warning restore 612, 618
         }

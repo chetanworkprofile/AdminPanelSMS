@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\source\\AdminPanelSMS\\AdminPanelStudentManagement\\AdminPanelStudentManagement.csproj": {}
+    "C:\\Users\\ChicMic\\source\\reposs\\AdminPanelStudentManagement\\AdminPanelStudentManagement.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\source\\AdminPanelSMS\\AdminPanelStudentManagement\\AdminPanelStudentManagement.csproj": {
+    "C:\\Users\\ChicMic\\source\\reposs\\AdminPanelStudentManagement\\AdminPanelStudentManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\source\\AdminPanelSMS\\AdminPanelStudentManagement\\AdminPanelStudentManagement.csproj",
+        "projectUniqueName": "C:\\Users\\ChicMic\\source\\reposs\\AdminPanelStudentManagement\\AdminPanelStudentManagement.csproj",
         "projectName": "AdminPanelStudentManagement",
-        "projectPath": "C:\\Users\\User\\source\\AdminPanelSMS\\AdminPanelStudentManagement\\AdminPanelStudentManagement.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\source\\AdminPanelSMS\\AdminPanelStudentManagement\\obj\\",
+        "projectPath": "C:\\Users\\ChicMic\\source\\reposs\\AdminPanelStudentManagement\\AdminPanelStudentManagement.csproj",
+        "packagesPath": "C:\\Users\\ChicMic\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ChicMic\\source\\reposs\\AdminPanelStudentManagement\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ChicMic\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -86,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.103\\RuntimeIdentifierGraph.json"
         }
       }
     }

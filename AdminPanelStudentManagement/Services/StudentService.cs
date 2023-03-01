@@ -19,15 +19,20 @@ namespace AdminPanelStudentManagement.Services
         }
         public async Task<Response> CreateStudent(AddStudent addStudent)
         {
-            Student? tempStudent = await DbContext.Students.FindAsync(addStudent.Email);
+            bool tempStudent = DbContext.Students.Where(t => t.Email == addStudent.Email).Any();
+            List<SubjectTeacherMappings> stmapping = DbContext.SubjectTeachersMappings.ToList();
             /*List<Subject> allocateSubject = await DbContext.Subjects.Where(s=>s.Name);*/
-            List<SubjectTeacherMappings> subjects = new List<SubjectTeacherMappings>();
+            List<SubjectTeacherMappings> subjectTeacher = new List<SubjectTeacherMappings>();
             
-            if (tempStudent == null)
+            if (tempStudent == false)
             {
                 foreach(var a in addStudent.SubjectsAllocated)
                 {
-                     subjects.Add((SubjectTeacherMappings)DbContext.SubjectTeachersMappings.Where(s => s.SubjectId == a.SubjectId && s.TeacherId == a.TeacherId));
+                    SubjectTeacherMappings? temp = stmapping.Find(s=>(s.SubjectId== a.SubjectId && s.TeacherId==a.TeacherId));
+                    if (temp is not null)
+                    {
+                        subjectTeacher.Add(temp); 
+                    }
                 }
                 var student = new Student()
                 {
@@ -35,7 +40,7 @@ namespace AdminPanelStudentManagement.Services
                     Name = addStudent.Name,
                     Email = addStudent.Email,
                     PasswordHash = _authService.CreatePasswordHash(addStudent.Password),
-                    SubjectTeacherAllocated = subjects,
+                    SubjectTeacherAllocated = subjectTeacher,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     IsDeleted = false
@@ -105,7 +110,7 @@ namespace AdminPanelStudentManagement.Services
             //pagination
             student = (DbSet<Student>)student.Skip((PageNumber - 1) * RecordsPerPage)
                                   .Take(RecordsPerPage);
-
+            
             response.StatusCode = 200;
             response.Message = "Student list fetched";
             response.Data = student;

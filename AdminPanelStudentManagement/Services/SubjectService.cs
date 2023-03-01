@@ -19,9 +19,9 @@ namespace AdminPanelStudentManagement.Services
         }
         public async Task<Response> CreateSubject(AddSubject addSubject)
         {
-            Subject? subjectExist = await DbContext.Subjects.FindAsync(addSubject);
+            //Subject? subjectExist = await DbContext.Subjects.FindAsync(addSubject.Name);
             //int subjectCount = await DbContext.Subjects.CountAsync();
-            if (subjectExist == null)
+            if (true)
             {
                 var Subject = new Subject()
                 {
@@ -32,6 +32,8 @@ namespace AdminPanelStudentManagement.Services
                     UpdatedAt = DateTime.Now,
                     IsDeleted = false
                 };
+                await DbContext.Subjects.AddAsync(Subject);
+                await DbContext.SaveChangesAsync();
                 SubjectResponse subjectResponse= new SubjectResponse()
                 {
                     Id = Subject.Id,
@@ -40,25 +42,22 @@ namespace AdminPanelStudentManagement.Services
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                 };
-                await DbContext.Subjects.AddAsync(Subject);
-                await DbContext.SaveChangesAsync();
                 response.StatusCode = 200;
                 response.Message = "Subject created";
                 response.Data = subjectResponse;
                 return response;
             }
-            response.StatusCode = 409;
+            /*response.StatusCode = 409;
             response.Message = "Subject Already Exists";
             response.Data = subjectExist;
-            return response;
+            return response;*/
         }
 
         public Response GetSubjects(Guid? subjectId, string? Name, String OrderBy, int SortOrder, int RecordsPerPage, int PageNumber)          // sort order   ===   e1 for ascending   -1 for descending
         {
-            var subject = DbContext.Subjects;
-            subject = (DbSet<Subject>)subject.Where(t => t.IsDeleted == false);
-            if (subjectId != null) { subject = (DbSet<Subject>)subject.Where(s => (s.Id == subjectId)); }
-            if (Name != null) { subject = (DbSet<Subject>)subject.Where(s => (s.Name == Name)); }
+            List<Subject> subject = DbContext.Subjects.Where(t => t.IsDeleted == false).ToList();
+            if (subjectId != null) { subject = subject.Where(s => (s.Id == subjectId)).ToList(); }
+            if (Name != null) { subject = subject.Where(s => (s.Name == Name)).ToList(); }
 
 
             Func<Subject, Object> orderBy = s => s.Id;
@@ -73,19 +72,31 @@ namespace AdminPanelStudentManagement.Services
 
             if (SortOrder == 1)
             {
-                subject = (DbSet<Subject>)subject.Select(c => (c));
+                subject = subject.Select(c => (c)).ToList();
             }
             else
             {
-                subject = (DbSet<Subject>)subject.Select(c => (c));
+                subject = subject.Select(c => (c)).ToList();
             }
 
             //pagination
-            subject = (DbSet<Subject>)subject.Skip((PageNumber - 1) * RecordsPerPage)
-                                  .Take(RecordsPerPage);
+            subject = subject.Skip((PageNumber - 1) * RecordsPerPage)
+                                  .Take(RecordsPerPage).ToList();
+            List<SubjectResponse> subjectResponses = new List<SubjectResponse>();
+            foreach (var a in subject)
+            {
+                subjectResponses.Add(new SubjectResponse()
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    CreatedAt = a.CreatedAt,
+                    Description = a.Description,
+                    UpdatedAt = a.UpdatedAt,
+                });
+            }
             response.StatusCode = 200;
             response.Message = "Subject list fetched";
-            response.Data = subject;
+            response.Data = subjectResponses;
             return response;
         }
 
@@ -106,9 +117,18 @@ namespace AdminPanelStudentManagement.Services
                 subject.UpdatedAt = DateTime.UtcNow;
                 await DbContext.SaveChangesAsync();
 
+                SubjectResponse subjectResponse = new SubjectResponse()
+                {
+                    Id = Id,
+                    Name = s.Name,
+                    Description = s.Description,
+                    UpdatedAt = DateTime.UtcNow,
+                    CreatedAt  = DateTime.UtcNow
+                };
+
                 response.StatusCode = 200;
                 response.Message = "Subject updated";
-                response.Data = subject;
+                response.Data = subjectResponse;
                 return response;
             }
             else
@@ -127,7 +147,7 @@ namespace AdminPanelStudentManagement.Services
             if (subject != null && subject.IsDeleted == false)
             {
                 subject.IsDeleted = true;
-                List<SubjectTeacherMappings> subjectTeacherMapping = (List<SubjectTeacherMappings>)DbContext.SubjectTeachersMappings.Where(t => t.SubjectId == Id);
+                List<SubjectTeacherMappings> subjectTeacherMapping = DbContext.SubjectTeachersMappings.Where(t => t.SubjectId == Id).ToList();
                 foreach(SubjectTeacherMappings st in subjectTeacherMapping)
                 {
                     List<Student> students = (List<Student>)DbContext.Students.Where(s => s.SubjectTeacherAllocated.Contains(st));
