@@ -3,6 +3,7 @@ using AdminPanelStudentManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentManagementSystemAPI.Models;
+using System.Linq;
 
 namespace AdminPanelStudentManagement.Services
 {
@@ -18,9 +19,9 @@ namespace AdminPanelStudentManagement.Services
         }
         public async Task<Response> CreateSubject(AddSubject addSubject)
         {
-            Subject? subject = await DbContext.Subjects.FindAsync(addSubject);
+            Subject? subjectExist = await DbContext.Subjects.FindAsync(addSubject);
             //int subjectCount = await DbContext.Subjects.CountAsync();
-            if (subject == null)
+            if (subjectExist == null)
             {
                 var Subject = new Subject()
                 {
@@ -35,11 +36,11 @@ namespace AdminPanelStudentManagement.Services
                 {
                     Id = Subject.Id,
                     Name = Subject.Name,
-                    Description = subject.Description,
+                    Description = Subject.Description,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                 };
-                await DbContext.Subjects.AddAsync(subject);
+                await DbContext.Subjects.AddAsync(Subject);
                 await DbContext.SaveChangesAsync();
                 response.StatusCode = 200;
                 response.Message = "Subject created";
@@ -48,15 +49,15 @@ namespace AdminPanelStudentManagement.Services
             }
             response.StatusCode = 409;
             response.Message = "Subject Already Exists";
-            response.Data = subject;
+            response.Data = subjectExist;
             return response;
         }
 
-        public Response GetSubjects(int? subjectId, string? Name, String OrderBy, int SortOrder, int RecordsPerPage, int PageNumber)          // sort order   ===   e1 for ascending   -1 for descending
+        public Response GetSubjects(Guid? subjectId, string? Name, String OrderBy, int SortOrder, int RecordsPerPage, int PageNumber)          // sort order   ===   e1 for ascending   -1 for descending
         {
             var subject = DbContext.Subjects;
             subject = (DbSet<Subject>)subject.Where(t => t.IsDeleted == false);
-            if (subjectId != 0) { subject = (DbSet<Subject>)subject.Where(s => (s.Id == subjectId)); }
+            if (subjectId != null) { subject = (DbSet<Subject>)subject.Where(s => (s.Id == subjectId)); }
             if (Name != null) { subject = (DbSet<Subject>)subject.Where(s => (s.Name == Name)); }
 
 
@@ -88,7 +89,7 @@ namespace AdminPanelStudentManagement.Services
             return response;
         }
 
-        public async Task<Response> UpdateSubject(int Id, UpdateSubject s)
+        public async Task<Response> UpdateSubject(Guid Id, UpdateSubject s)
         {
             Subject? subject = await DbContext.Subjects.FindAsync(Id);
 
@@ -106,7 +107,7 @@ namespace AdminPanelStudentManagement.Services
                 await DbContext.SaveChangesAsync();
 
                 response.StatusCode = 200;
-                response.Message = "Teacher updated";
+                response.Message = "Subject updated";
                 response.Data = subject;
                 return response;
             }
@@ -119,25 +120,29 @@ namespace AdminPanelStudentManagement.Services
             }
         }
 
-        public async Task<Response> DeleteSubject(int Id)
+        public async Task<Response> DeleteSubject(Guid Id)
         {
             Subject? subject = await DbContext.Subjects.FindAsync(Id);
 
             if (subject != null && subject.IsDeleted == false)
             {
                 subject.IsDeleted = true;
-                List<Teacher> teachers = (List<Teacher>)DbContext.Teachers.Where(t => t.SubjectAllocated == subject);
-                foreach(Teacher t in teachers)
+                List<SubjectTeacherMappings> subjectTeacherMapping = (List<SubjectTeacherMappings>)DbContext.SubjectTeachersMappings.Where(t => t.SubjectId == Id);
+                foreach(SubjectTeacherMappings st in subjectTeacherMapping)
                 {
-                    t.SubjectAllocated = null;
+                    List<Student> students = (List<Student>)DbContext.Students.Where(s => s.SubjectTeacherAllocated.Contains(st));
+                    foreach(Student s in students)
+                    {
+                        DbContext.Students.Find(s).SubjectTeacherAllocated.Remove(st);
+                    }
+                    DbContext.SubjectTeachersMappings.Remove(st);
                 }
 
-                List<Student> students = (List<Student>)DbContext.Students.Where(s => s.SubjectsAllocated.Contains(subject));
-                foreach(Student s in students)
+                //List<Student> students = (List<Student>)DbContext.Students.Where(s => s.SubjectTeacherAllocated.Contains(subjectTeacherMapping));
+                /*foreach(Student s in students)
                 {
                     s.SubjectsAllocated.Remove(subject);
-                }
-
+                }*/
                 await DbContext.SaveChangesAsync();
 
                 response.StatusCode = 200;

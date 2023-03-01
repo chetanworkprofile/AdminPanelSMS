@@ -49,7 +49,7 @@ namespace AdminPanelStudentManagement.Controllers
 
         [HttpGet]
         [Route("/api/v1/GetSubjects")]
-        public ActionResult GetSubjects(int? subjectId = 0, string? Name = null, String OrderBy = "Id", int SortOrder = 1, int RecordsPerPage = 10, int PageNumber = 0)
+        public ActionResult GetSubjects(Guid? subjectId = null, string? Name = null, String OrderBy = "Id", int SortOrder = 1, int RecordsPerPage = 10, int PageNumber = 0)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace AdminPanelStudentManagement.Controllers
 
         [HttpPut]
         [Route("/api/v1/UpdateSubject")]
-        public IActionResult UpdateSubject(int SubjectId, [FromBody] UpdateSubject updateSubject)
+        public IActionResult UpdateSubject(Guid SubjectId, [FromBody] UpdateSubject updateSubject)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace AdminPanelStudentManagement.Controllers
 
         [HttpDelete]
         [Route("/api/v1/DeleteSubject")]
-        public IActionResult DeleteSubject(int subjectId)
+        public IActionResult DeleteSubject(Guid subjectId)
         {
             try
             {
